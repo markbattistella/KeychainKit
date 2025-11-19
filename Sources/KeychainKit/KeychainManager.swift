@@ -7,8 +7,7 @@
 import Foundation
 import Security
 
-@MainActor
-public final class KeychainManager {
+public final class KeychainManager: Sendable {
 
     public static let shared = KeychainManager()
     private init() {}
