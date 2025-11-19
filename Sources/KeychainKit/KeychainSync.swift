@@ -6,7 +6,7 @@
 
 import Foundation
 
-public enum KeychainSync {
+public enum KeychainSync: Sendable {
     case localOnly
     case iCloud
 
