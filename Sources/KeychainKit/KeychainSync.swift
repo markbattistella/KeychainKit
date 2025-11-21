@@ -6,14 +6,27 @@
 
 import Foundation
 
-public enum KeychainSync: Sendable {
+/// Indicates whether a Keychain item should sync with iCloud.
+public enum KeychainSync {
+    
+    /// Store the item only on the local device, without iCloud synchronisation.
     case localOnly
+    
+    /// Allow the item to be synchronised across devices via iCloud.
     case iCloud
+}
 
-    var attributeValue: Any? {
+extension KeychainSync {
+    
+    /// The Core Foundation attribute value representing the sync behaviour.
+    ///
+    /// - Returns: `kCFBooleanFalse` for `.localOnly` or `kCFBooleanTrue` for `.iCloud`.
+    internal var attributeValue: Any {
         switch self {
-            case .localOnly:  return nil
-            case .iCloud:     return kCFBooleanTrue
+            case .localOnly:
+                return kCFBooleanFalse as Any
+            case .iCloud:
+                return kCFBooleanTrue as Any
         }
     }
 }
