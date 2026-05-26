@@ -33,9 +33,14 @@ Add `KeychainKit` to your Swift project using Swift Package Manager.
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/markbattistella/KeychainKit", from: "1.0.0")
+  .package(url: "https://github.com/markbattistella/KeychainKit", from: "26.0.0")
 ]
 ```
+
+### Requirements
+
+- Swift 6.0+
+- iOS 14.0+, macOS 11.0+, Mac Catalyst 14.0+, tvOS 14.0+, watchOS 7.0+, or visionOS 1.0+
 
 ## Usage
 
@@ -105,6 +110,9 @@ keychain.set("abc123", for: KeychainKey.authToken, sync: .iCloud)
 let token = keychain.string(for: KeychainKey.authToken, sync: .iCloud)
 ```
 
+Storage defaults to `.localOnly`. Reads and removals can pass a specific `sync` value, or omit it
+to match both local and synchronisable items where supported by Keychain.
+
 ### Controlling Accessibility
 
 ```swift
@@ -121,6 +129,7 @@ let level = keychain.accessibility(for: KeychainKey.authToken)
 
 ```swift
 let allKeys = keychain.allKeys()
+let cloudKeys = keychain.allKeys(sync: .iCloud)
 let exists = keychain.exists(for: KeychainKey.authToken)
 ```
 
@@ -130,6 +139,7 @@ let exists = keychain.exists(for: KeychainKey.authToken)
 keychain.remove(for: KeychainKey.authToken)
 keychain.removeLocalAndCloud(for: KeychainKey.authToken) // local + iCloud
 keychain.removeAll() // all keys under current serviceName
+keychain.removeAll(sync: .localOnly) // local keys only
 ```
 
 ### Migration
@@ -148,6 +158,10 @@ let result = Keychain.migrate(
 print(result.migrated)
 print(result.failed)
 ```
+
+Migration preserves the fully-qualified account names returned by `allKeys()`, so key prefixes are
+not applied a second time while copying values between services or access groups. `didModify` is
+`true` only when `.perform` actually migrates at least one item.
 
 Use `.dryRun` to simulate migration without making changes:
 
